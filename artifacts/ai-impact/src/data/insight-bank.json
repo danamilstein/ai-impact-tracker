@@ -1,0 +1,271 @@
+{
+  "version": "1.2",
+  "note": "Post-calculation insight message bank. Grow by adding entries here (no code changes needed) as long as each new message only uses tokens already resolved in lib/insights.ts. category: 1 Comparison, 2 Methodology, 3 Pattern, 4 Cleaner-hours, 5 Cross-pollination, 6 Training, 7 Did-you-know, 8 Reflective. Emphasis: wrap a phrase in *asterisks* for italics. Placeholders use [tokenName].",
+  "messages": [
+    {
+      "id": "c1-pasta",
+      "category": 1,
+      "text": "This session's water cost is about a pasta noodle's worth of boiling water. *Small, but a real number.*"
+    },
+    {
+      "id": "c1-fridge",
+      "category": 1,
+      "text": "Today's queries used roughly the energy of running a standard refrigerator for [fridgeMinutes] minutes."
+    },
+    {
+      "id": "c1-espresso",
+      "category": 1,
+      "text": "The water cost of today's session would fill about [espressoCups] espresso cups."
+    },
+    {
+      "id": "c1-driving",
+      "category": 1,
+      "text": "Your week's logged carbon is roughly equivalent to [weekDrivingMiles] miles of city driving — *not nothing, not everything.*"
+    },
+    {
+      "id": "c1-laptop",
+      "category": 1,
+      "text": "Run today's queries on your own laptop and you'd need about [laptopBatteryMinutes] minutes of battery. The work happened at a data center instead."
+    },
+    {
+      "id": "c1-phone-wh",
+      "category": 1,
+      "text": "Today's queries used about [sessionWh] Wh — roughly what your phone uses to charge from 80% to 100%.",
+      "conditions": { "energyWhMin": 1, "energyWhMax": 8 }
+    },
+    {
+      "id": "c1-phone-charges",
+      "category": 1,
+      "text": "Today's session used roughly the energy of [phoneCharges] full phone charges."
+    },
+    {
+      "id": "c1-barbecue",
+      "category": 1,
+      "text": "The carbon for today's session is roughly one breath of a backyard barbecue; the water, roughly one shower minute.",
+      "conditions": { "co2gMax": 40, "waterMlMax": 900 }
+    },
+    {
+      "id": "c1-led",
+      "category": 1,
+      "text": "Each query today drew about as much power as an LED bulb running for a few minutes. *Alone, trivial. Across a day, less so.*"
+    },
+    {
+      "id": "c2-coeffs",
+      "category": 2,
+      "text": "These numbers use peer-reviewed coefficients (Patterson et al. 2022, Luccioni et al. 2023, Li et al. 2023). The methodology page has the full source list."
+    },
+    {
+      "id": "c2-operational",
+      "category": 2,
+      "text": "This figure is *operational only* — training a model carries a separate, often larger footprint. See the methodology page."
+    },
+    {
+      "id": "c2-one-query",
+      "category": 2,
+      "text": "We count one query per message you send; agentic and multi-step tools may use more than shown. Details on the methodology page."
+    },
+    {
+      "id": "c2-modeled",
+      "category": 2,
+      "text": "Some tools here are flagged *low confidence* — their coefficient is modeled, not disclosed by the developer. The methodology page shows which, and why."
+    },
+    {
+      "id": "c2-grid-attribution",
+      "category": 2,
+      "text": "Carbon uses the grid of the data center where a tool runs — not your local grid. The methodology page explains why that distinction matters."
+    },
+    {
+      "id": "c3-tool-week",
+      "category": 3,
+      "text": "You've logged [toolWeekCount] sessions with [tool] this week. Tried the same task on a different tool? The Compare Tools view sometimes surprises.",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c3-trend-up",
+      "category": 3,
+      "text": "Your logging is up [weekTrendPct]% over last week. *Anything different happening this week?*",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c3-day-n",
+      "category": 3,
+      "text": "Today is your [dayCount] day of logging. Patterns tend to get more useful around day 7.",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c3-time-range",
+      "category": 3,
+      "text": "Most of your sessions this week land between [timeRange]. Worth checking whether that's also when the grid runs dirtiest.",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c3-distinct-tools",
+      "category": 3,
+      "text": "You're using [distinctToolsWeek] different AI tools this week. The Compare Tools view shows the per-query difference across all of them.",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c3-size-creep",
+      "category": 3,
+      "text": "Your average session size has crept up [monthSizeTrendPct]% over the past month. *Bigger isn't bad — but it's worth noticing.*",
+      "conditions": { "minSessions": 3 }
+    },
+    {
+      "id": "c4-now",
+      "category": 4,
+      "text": "Right now the grid running [tool] is at [gridIntensity] gCO₂/kWh. Cleanest window in the next 24 hours: [cleanWindow].",
+      "conditions": { "requiresGridLive": true, "requiresCleanWindow": true }
+    },
+    {
+      "id": "c4-wait",
+      "category": 4,
+      "text": "If you can wait a few hours, the grid your AI runs on is projected to be [cleanPct]% cleaner. Worth it for batch work.",
+      "conditions": { "requiresGridLive": true, "requiresCleanWindow": true }
+    },
+    {
+      "id": "c4-region",
+      "category": 4,
+      "text": "[tool] runs in [region]. The cleanest hour to use it tomorrow is around [cleanWindow] local.",
+      "conditions": { "requiresGridLive": true, "requiresCleanWindow": true }
+    },
+    {
+      "id": "c4-tomorrow",
+      "category": 4,
+      "text": "Tomorrow morning is the cleanest window on [tool]'s grid this week — flagging it in case you have flexibility.",
+      "conditions": { "requiresGridLive": true, "requiresCleanWindow": true }
+    },
+    {
+      "id": "c5-literacy",
+      "category": 5,
+      "text": "You've logged [weekCount] sessions this week. Curious where you land on the AI Literacy Hub's 5-stage model? An eight-minute take, no tracking.",
+      "conditions": { "minSessions": 5, "notVisitedInfo": true }
+    },
+    {
+      "id": "c5-teach",
+      "category": 5,
+      "text": "If you teach: the AI Nutrition Label lets you publish a clean per-assignment AI policy in about ten minutes.",
+      "conditions": { "minSessions": 5, "notVisitedInfo": true }
+    },
+    {
+      "id": "c5-self-assessment",
+      "category": 5,
+      "text": "The Tracker measures the cost; the Self-Assessment measures the literacy. *They're complementary* — eight minutes for the take.",
+      "conditions": { "minSessions": 5, "notVisitedInfo": true }
+    },
+    {
+      "id": "c5-tender",
+      "category": 5,
+      "text": "If you're working with eco-anxiety: the Tender framework was built for exactly that. Wren Astra has the workbook.",
+      "conditions": { "minSessions": 5, "notVisitedInfo": true }
+    },
+    {
+      "id": "c5-toolkit",
+      "category": 5,
+      "text": "The Tracker is one of three tools in the AI Design Toolkit. The other two are linked from the About page.",
+      "conditions": { "minSessions": 5, "notVisitedInfo": true }
+    },
+    {
+      "id": "c6-inference",
+      "category": 6,
+      "text": "Today's queries used about [sessionKwh] kWh of inference energy. The model behind them was trained on roughly [trainMwh] MWh — see the Training Footprint page.",
+      "conditions": { "minSessions": 10 }
+    },
+    {
+      "id": "c6-qualitative",
+      "category": 6,
+      "text": "Inference is the part you see. Training is the part that already happened. *Both have a footprint* — and both are worth separating.",
+      "conditions": { "minSessions": 10 }
+    },
+    {
+      "id": "c6-multiple",
+      "category": 6,
+      "text": "Training a frontier model is roughly [trainMultiple]× the energy of all the queries one user runs against it in a year. That cost was paid before you arrived.",
+      "conditions": { "minSessions": 10 }
+    },
+    {
+      "id": "c6-tco2e",
+      "category": 6,
+      "text": "The model behind your last session has an estimated training footprint of [trainTco2e] tCO₂e. Your query is one of billions amortized against it.",
+      "conditions": { "minSessions": 10 }
+    },
+    {
+      "id": "c7-search",
+      "category": 7,
+      "text": "Fun fact: a single large-model query can use several times the energy of a plain web search — though the gap varies wildly by task and model."
+    },
+    {
+      "id": "c7-idle",
+      "category": 7,
+      "text": "Fun fact: most of a model's lifetime energy is its training, not its running. Your per-query cost is only the running share."
+    },
+    {
+      "id": "c7-water-cooling",
+      "category": 7,
+      "text": "Fun fact: a large share of data-center water goes to evaporative cooling. *The bottle on your screen isn't a metaphor* — that water is gone."
+    },
+    {
+      "id": "c7-time-of-day",
+      "category": 7,
+      "text": "Fun fact: the same query at noon versus 2am can carry a very different carbon footprint, depending on the grid mix. *Time of day matters.*"
+    },
+    {
+      "id": "c7-image",
+      "category": 7,
+      "text": "Fun fact: image generation can use dramatically more energy than text per output. The Tracker reflects this in its coefficient table."
+    },
+    {
+      "id": "c7-hyperscale",
+      "category": 7,
+      "text": "Fun fact: the largest hyperscale data centers draw the electricity of a small city — and the biggest single load is the compute, not the building."
+    },
+    {
+      "id": "c7-prompt-length",
+      "category": 7,
+      "text": "Fun fact: shorter prompts save a little energy, but far less than picking the right model. *Tool choice beats word-trimming.*"
+    },
+    {
+      "id": "c7-hydro",
+      "category": 7,
+      "text": "Fun fact: cooler grids aren't always cleaner grids — hydro regions can be carbon-light yet water-heavy. The Tracker shows both because both matter."
+    },
+    {
+      "id": "c7-edge",
+      "category": 7,
+      "text": "Fun fact: on-device AI uses a fraction of the energy of cloud-hosted models — the data center does the heavy lifting for most tools you use."
+    },
+    {
+      "id": "c7-cache",
+      "category": 7,
+      "text": "Fun fact: prompt caching lets providers reuse earlier computation, cutting energy use substantially for repeated context."
+    },
+    {
+      "id": "c7-amortized",
+      "category": 7,
+      "text": "Fun fact: a model's training is a one-time cost spread across billions of queries. Your share of it is tiny — but real."
+    },
+    {
+      "id": "c8-intentional",
+      "category": 8,
+      "text": "Pause for a moment: was your last hour of AI use intentional, or reflexive?",
+      "conditions": { "notFirstOfDay": true }
+    },
+    {
+      "id": "c8-habit",
+      "category": 8,
+      "text": "Notice anything? Sometimes reaching for the same tool is the right call; sometimes it's just habit.",
+      "conditions": { "notFirstOfDay": true }
+    },
+    {
+      "id": "c8-worth",
+      "category": 8,
+      "text": "The Tracker can measure cost. *Whether the cost was worth it is your call* — and only you can make it.",
+      "conditions": { "notFirstOfDay": true }
+    },
+    {
+      "id": "c8-saved",
+      "category": 8,
+      "text": "What did your last AI interaction actually save you? If the answer is \"nothing in particular,\" *that's information too.*",
+      "conditions": { "notFirstOfDay": true }
+    }
+  ]
+}

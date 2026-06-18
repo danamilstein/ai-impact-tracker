@@ -1,0 +1,21 @@
+{
+  "name": "@workspace/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hello": "tsx ./src/hello.ts",
+    "recompute-session-impacts": "tsx ./src/recompute-session-impacts.ts",
+    "seed-catalog-may-2026": "tsx ./src/seed-catalog-may-2026.ts",
+    "migrate-auth-backfill": "tsx ./src/migrate-auth-backfill.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@workspace/db": "workspace:*",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "catalog:"
+  }
+}

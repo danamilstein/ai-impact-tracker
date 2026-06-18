@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/ai-impact-deck/"
+title = "AI Impact Tracker — Deck"
+version = "1.0.0"
+id = "artifacts/ai-impact-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/ai-impact-deck/" ]
+localPort = 19295
+
+[services.development]
+run = "pnpm --filter @workspace/ai-impact-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ai-impact-deck", "run", "build" ]
+publicDir = "artifacts/ai-impact-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19295"
+BASE_PATH = "/ai-impact-deck/"

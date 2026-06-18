@@ -1,0 +1,793 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: AI Environmental Impact Tracker API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: tools
+    description: AI tool catalog
+  - name: sessions
+    description: Usage session logging
+  - name: stats
+    description: Aggregated impact statistics
+  - name: goals
+    description: Environmental impact goals
+  - name: profile
+    description: Authenticated user profile and preferences
+  - name: grid
+    description: Electricity grid carbon intensity (live + static)
+security:
+  - cookieAuth: []
+paths:
+  /me:
+    get:
+      operationId: getMe
+      tags: [profile]
+      summary: Get current user profile including grid region preference
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+    patch:
+      operationId: updateMe
+      tags: [profile]
+      summary: Update current user profile preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Updated user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /grid/intensities:
+    get:
+      operationId: getGridIntensities
+      tags: [grid]
+      summary: Get carbon intensity for each grid region (live EIA data with static fallback)
+      security: []
+      responses:
+        "200":
+          description: Grid carbon intensities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GridIntensity"
+
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /tools:
+    get:
+      operationId: listTools
+      tags: [tools]
+      summary: List all AI tools with their environmental coefficients
+      security: []
+      responses:
+        "200":
+          description: List of AI tools
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AiTool"
+
+  /tools/{id}:
+    get:
+      operationId: getTool
+      tags: [tools]
+      summary: Get a single AI tool
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: AI tool
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiTool"
+        "404":
+          description: Not found
+
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [sessions]
+      summary: List usage sessions
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: toolId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Log a new AI usage session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionInput"
+      responses:
+        "201":
+          description: Created session with computed impact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /sessions/{id}:
+    get:
+      operationId: getSession
+      tags: [sessions]
+      summary: Get a single session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateSession
+      tags: [sessions]
+      summary: Update a session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionUpdate"
+      responses:
+        "200":
+          description: Updated session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteSession
+      tags: [sessions]
+      summary: Delete a session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /stats/summary:
+    get:
+      operationId: getStatsSummary
+      tags: [stats]
+      summary: Get aggregated impact totals and equivalencies
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [week, month, year, all]
+            default: month
+      responses:
+        "200":
+          description: Impact summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImpactSummary"
+
+  /stats/by-tool:
+    get:
+      operationId: getStatsByTool
+      tags: [stats]
+      summary: Get impact breakdown by AI tool
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [week, month, year, all]
+            default: month
+      responses:
+        "200":
+          description: Impact by tool
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ToolImpact"
+
+  /goals:
+    get:
+      operationId: listGoals
+      tags: [goals]
+      summary: List all goals
+      responses:
+        "200":
+          description: List of goals with current progress
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GoalWithProgress"
+    post:
+      operationId: createGoal
+      tags: [goals]
+      summary: Create a new goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalInput"
+      responses:
+        "201":
+          description: Created goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalWithProgress"
+
+  /goals/{id}:
+    patch:
+      operationId: updateGoal
+      tags: [goals]
+      summary: Update a goal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalUpdate"
+      responses:
+        "200":
+          description: Updated goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalWithProgress"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteGoal
+      tags: [goals]
+      summary: Delete a goal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /stats/report:
+    get:
+      operationId: getWeeklyReport
+      tags: [stats]
+      summary: Get a period report comparing current vs previous period
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [week, month]
+            default: week
+      responses:
+        "200":
+          description: Period report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PeriodReport"
+
+  /stats/trend:
+    get:
+      operationId: getStatsTrend
+      tags: [stats]
+      summary: Get daily impact trend for charting
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Daily trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DailyTrend"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: __session
+      description: Clerk session cookie. Set by the browser when the user is signed in.
+  responses:
+    Unauthorized:
+      description: Caller is not signed in
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error:
+                type: string
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    AiTool:
+      type: object
+      required: [id, name, provider, category, waterPerQueryMl, co2PerQueryG, energyPerQueryWh]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        provider:
+          type: string
+        category:
+          type: string
+          enum: [text, code, image, audio, multimodal, video, productivity]
+        waterPerQueryMl:
+          type: number
+          description: Water consumed per query in milliliters
+        co2PerQueryG:
+          type: number
+          description: CO2 emitted per query in grams
+        energyPerQueryWh:
+          type: number
+          description: Energy used per query in watt-hours
+        iconUrl:
+          type: ["string", "null"]
+
+    Session:
+      type: object
+      required: [id, toolId, toolName, toolProvider, queryCount, complexity, waterMl, co2G, energyWh, createdAt]
+      properties:
+        id:
+          type: integer
+        toolId:
+          type: integer
+        toolName:
+          type: string
+        toolProvider:
+          type: string
+        queryCount:
+          type: integer
+        complexity:
+          type: string
+          enum: [low, medium, high]
+        activityType:
+          type: ["string", "null"]
+          enum: [queries, research, composing, visualizing, programming, null]
+        durationMinutes:
+          type: ["integer", "null"]
+        waterMl:
+          type: number
+        co2G:
+          type: number
+        energyWh:
+          type: number
+        notes:
+          type: ["string", "null"]
+        sessionDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+
+    SessionInput:
+      type: object
+      required: [toolId, complexity, activityType, durationMinutes]
+      properties:
+        toolId:
+          type: integer
+        activityType:
+          type: string
+          enum: [queries, research, composing, visualizing, programming]
+        durationMinutes:
+          type: integer
+          minimum: 1
+        complexity:
+          type: string
+          enum: [low, medium, high]
+        notes:
+          type: ["string", "null"]
+        sessionDate:
+          type: ["string", "null"]
+          format: date
+
+    SessionUpdate:
+      type: object
+      properties:
+        activityType:
+          type: string
+          enum: [queries, research, composing, visualizing, programming]
+        durationMinutes:
+          type: integer
+          minimum: 1
+        complexity:
+          type: string
+          enum: [low, medium, high]
+        notes:
+          type: ["string", "null"]
+
+    ImpactSummary:
+      type: object
+      required: [totalWaterMl, totalCo2G, totalEnergyWh, totalSessions, totalQueries, equivalencies]
+      properties:
+        totalWaterMl:
+          type: number
+        totalCo2G:
+          type: number
+        totalEnergyWh:
+          type: number
+        totalSessions:
+          type: integer
+        totalQueries:
+          type: integer
+        equivalencies:
+          $ref: "#/components/schemas/Equivalencies"
+
+    Equivalencies:
+      type: object
+      required: [bottlesOfWater, kmDriven, smartphoneCharges, minutesOfStreaming, ledBulbHours, googleSearches]
+      properties:
+        bottlesOfWater:
+          type: number
+          description: 500ml bottles equivalent
+        kmDriven:
+          type: number
+          description: Car km equivalent for CO2 (120g/km)
+        smartphoneCharges:
+          type: number
+          description: Number of smartphone full charges equivalent (12 Wh each)
+        minutesOfStreaming:
+          type: number
+          description: Minutes of HD video streaming equivalent
+        ledBulbHours:
+          type: number
+          description: Hours of a 9W LED bulb running
+        googleSearches:
+          type: number
+          description: Equivalent number of Google searches (0.3 Wh each)
+
+    ToolImpact:
+      type: object
+      required: [toolId, toolName, provider, category, waterMl, co2G, energyWh, sessions, queries]
+      properties:
+        toolId:
+          type: integer
+        toolName:
+          type: string
+        provider:
+          type: string
+        category:
+          type: string
+        waterMl:
+          type: number
+        co2G:
+          type: number
+        energyWh:
+          type: number
+        sessions:
+          type: integer
+        queries:
+          type: integer
+
+    DailyTrend:
+      type: object
+      required: [date, waterMl, co2G, energyWh, sessions, queries]
+      properties:
+        date:
+          type: string
+          format: date
+        waterMl:
+          type: number
+        co2G:
+          type: number
+        energyWh:
+          type: number
+        sessions:
+          type: integer
+        queries:
+          type: integer
+
+    PeriodSnapshot:
+      type: object
+      required: [waterMl, co2G, energyWh, sessions, queries]
+      properties:
+        waterMl:
+          type: number
+        co2G:
+          type: number
+        energyWh:
+          type: number
+        sessions:
+          type: integer
+        queries:
+          type: integer
+
+    PeriodChange:
+      type: object
+      required: [waterMlPct, co2GPct, energyWhPct, sessionsPct]
+      properties:
+        waterMlPct:
+          type: ["number", "null"]
+        co2GPct:
+          type: ["number", "null"]
+        energyWhPct:
+          type: ["number", "null"]
+        sessionsPct:
+          type: ["number", "null"]
+
+    ReportTopTool:
+      type: object
+      required: [toolName, provider, co2G, waterMl, energyWh, sessions]
+      properties:
+        toolName:
+          type: string
+        provider:
+          type: string
+        co2G:
+          type: number
+        waterMl:
+          type: number
+        energyWh:
+          type: number
+        sessions:
+          type: integer
+
+    ReportPeakDay:
+      type: object
+      required: [date, co2G, waterMl, energyWh, sessions]
+      properties:
+        date:
+          type: string
+          format: date
+        co2G:
+          type: number
+        waterMl:
+          type: number
+        energyWh:
+          type: number
+        sessions:
+          type: integer
+
+    ReportGoalStatus:
+      type: object
+      required: [id, name, metric, period, targetValue, currentValue, percentUsed, onTrack]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        metric:
+          type: string
+        period:
+          type: string
+        targetValue:
+          type: number
+        currentValue:
+          type: number
+        percentUsed:
+          type: number
+        onTrack:
+          type: boolean
+
+    PeriodReport:
+      type: object
+      required: [period, periodLabel, current, previous, changes, topTools, goalStatuses]
+      properties:
+        period:
+          type: string
+        periodLabel:
+          type: string
+          description: Human-readable label e.g. "May 10 – 17"
+        current:
+          $ref: "#/components/schemas/PeriodSnapshot"
+        previous:
+          $ref: "#/components/schemas/PeriodSnapshot"
+        changes:
+          $ref: "#/components/schemas/PeriodChange"
+        topTools:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportTopTool"
+        peakDay:
+          oneOf:
+            - $ref: "#/components/schemas/ReportPeakDay"
+            - type: "null"
+        goalStatuses:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportGoalStatus"
+
+    GridIntensity:
+      type: object
+      required: [id, label, intensityGPerKwh, source]
+      properties:
+        id:
+          type: string
+          description: Grid region ID (matches the grid selector)
+        label:
+          type: string
+        intensityGPerKwh:
+          type: number
+          description: Carbon intensity in gCO2/kWh — live when source is "live", otherwise the static fallback
+        source:
+          type: string
+          enum: [live, static]
+          description: Whether the intensity came from the live EIA feed or the static curated average
+        asOf:
+          type: ["string", "null"]
+          format: date-time
+          description: Timestamp of the live reading (UTC hour), null for static values
+
+    UserProfile:
+      type: object
+      required: [id, gridRegion]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        gridRegion:
+          type: string
+          description: Electricity grid region ID used to adjust carbon calculations
+
+    UserProfileUpdate:
+      type: object
+      properties:
+        gridRegion:
+          type: string
+          description: Electricity grid region ID
+
+    GoalInput:
+      type: object
+      required: [name, metric, period, targetValue]
+      properties:
+        name:
+          type: string
+        metric:
+          type: string
+          enum: [water_ml, co2_g, energy_wh]
+        period:
+          type: string
+          enum: [weekly, monthly]
+        targetValue:
+          type: number
+          description: Max allowed value for the metric in the given period
+
+    GoalUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        targetValue:
+          type: number
+
+    GoalWithProgress:
+      type: object
+      required: [id, name, metric, period, targetValue, currentValue, percentUsed, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        metric:
+          type: string
+          enum: [water_ml, co2_g, energy_wh]
+        period:
+          type: string
+          enum: [weekly, monthly]
+        targetValue:
+          type: number
+        currentValue:
+          type: number
+        percentUsed:
+          type: number
+        createdAt:
+          type: string
+          format: date-time

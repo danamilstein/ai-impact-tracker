@@ -1,0 +1,74 @@
+[
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000001",
+    "position": 1,
+    "filepath": "src/pages/slides/Title.tsx",
+    "title": "AI Impact Tracker",
+    "description": "Title slide — water, energy, and carbon footprint of AI use, framed across the Seven Dimensions of Wellness. v1.4",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000002",
+    "position": 2,
+    "filepath": "src/pages/slides/InvisibleFootprint.tsx",
+    "title": "The Invisible Footprint",
+    "description": "Problem statement — AI's resource cost is hidden; the tracker makes it visible, comparable, and personal.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000003",
+    "position": 3,
+    "filepath": "src/pages/slides/ProductOverview.tsx",
+    "title": "Product Overview",
+    "description": "System layout — Tool Catalog, My Practice, Practice Receipt, and the transparency pages.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000004",
+    "position": 4,
+    "filepath": "src/pages/slides/EstimationModel.tsx",
+    "title": "The Estimation Model",
+    "description": "The three linked formulas for energy, carbon, and water that share one energy term.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000005",
+    "position": 5,
+    "filepath": "src/pages/slides/Coefficients.tsx",
+    "title": "Coefficients & Data Sources",
+    "description": "Complexity multipliers, grid-intensity figures, live EIA data, and the Li et al. 2023 water factor.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000006",
+    "position": 6,
+    "filepath": "src/pages/slides/EnergyComparisons.tsx",
+    "title": "Energy in Familiar Terms",
+    "description": "Student-friendly energy comparisons with device vs data-center split.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000007",
+    "position": 7,
+    "filepath": "src/pages/slides/SevenDimensions.tsx",
+    "title": "Seven Dimensions of Wellness",
+    "description": "The Hettler/NWI wellness frame, with environmental impact as one dimension of seven.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000008",
+    "position": 8,
+    "filepath": "src/pages/slides/OffsetCatalog.tsx",
+    "title": "The Offset Catalog",
+    "description": "Dimension-tagged everyday actions, framed as context rather than absolution.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f0c2d4-1b2e-4a31-9c01-000000000009",
+    "position": 9,
+    "filepath": "src/pages/slides/PrivacySources.tsx",
+    "title": "Privacy, Limits & Sources",
+    "description": "Local-only storage, low-precision honesty, and the cited sources.",
+    "speakerNotes": ""
+  }
+]
