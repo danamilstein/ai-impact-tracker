@@ -892,8 +892,25 @@ water_ml  = energy_Wh × 1.8`}
               </Link>{" "}
               page turns a quick paste into a draft entry. Both still open the log form for you to
               review and confirm — they speed up the typing, not the thinking. Nothing is recorded
-              until you say so, and neither tool ever reads your conversations or runs in the
-              background.
+              until you say so, and neither tool runs in the background: the bookmarklet reads only
+              the address of the page you're on, to detect which tool you're using, and the import
+              page reads only the text you choose to paste into it. Neither one watches your activity
+              or reaches into your conversations on its own.
+            </p>
+            <p className="text-muted-foreground">
+              If you want to see exactly how any of this works, the Tracker is open source. The
+              full application — including the coefficient catalog, the formulas on this page, and
+              the bookmarklet and import logic described above — is published under the MIT license
+              at{" "}
+              <a
+                href="https://github.com/danamilstein/ai-impact-tracker"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                github.com/danamilstein/ai-impact-tracker
+              </a>
+              .
             </p>
           </section>
 

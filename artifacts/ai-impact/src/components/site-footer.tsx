@@ -10,6 +10,15 @@ export function SiteFooter({ className = "" }: { className?: string }) {
       <Link href="/about" className="text-primary hover:underline">
         See Terms
       </Link>
+      {" · "}
+      <a
+        href="https://github.com/danamilstein/ai-impact-tracker"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary hover:underline"
+      >
+        View source
+      </a>
       .
     </footer>
   );

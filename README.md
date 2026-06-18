@@ -11,7 +11,7 @@ Designed by Dana Milstein Santoscoy, PhD, ACC.
 - **Live U.S. grid intensity** — carbon intensity for U.S. balancing authorities pulled hourly from the EIA grid monitor; curated static averages elsewhere.
 - **Location-dependent water** — per-region water-usage effectiveness, based on Li, Yang, Islam & Ren (2023).
 - **Seven Dimensions of Wellness** — an optional, private way to notice trade-offs the numbers can't see.
-- **Quick-Log bookmarklet & Import** — low-friction ways to start a log that always open the form for you to review and confirm. The Tracker never auto-tracks or reads your conversations.
+- **Quick-Log bookmarklet & Import** — low-friction ways to start a log that always open the form for you to review and confirm. The Tracker never runs in the background: the bookmarklet reads only the address of the page you're on to detect the tool, and import reads only the text you choose to paste. Nothing is recorded until you confirm.
 
 A full, sourced explanation of every estimate lives on the in-app **Methodology** page.
 
